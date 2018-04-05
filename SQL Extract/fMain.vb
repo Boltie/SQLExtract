@@ -59,16 +59,6 @@
         txtConnectionTime.Text = My.Settings.ConnectTime
     End Sub
 
-    Private Sub cntrlLock(bLock As Boolean)
-        If bLock _
-            Then bLock = False _
-            Else bLock = True
-
-        btnLoad.Enabled = bLock
-        btnSave.Enabled = bLock
-        btnQuery.Enabled = bLock
-    End Sub
-
     Private Function isDateTimeErr(typeToCheck As DataTypeEnum) As Boolean
         Dim _
             types(4) As DataTypeEnum
@@ -141,8 +131,8 @@
             .Open(sConn)
         End With
 
-        updateLog("Data connection opened" & vbNewLine _
-                & "Data Connection Settings:" & sConn & vbNewLine _
+        updateLog("Connection opened" & vbNewLine _
+                & "Connection Settings:" & sConn & vbNewLine _
                 & "Command Timeout:" & txtCommandTime.Text & vbNewLine _
                 & "Connection Timeout:" & txtConnectionTime.Text)
         Exit Sub
@@ -200,7 +190,6 @@ ErrorHandle:
         End With
 
         updateStatus("QUERYING - PLEASE WAIT", True)
-        'cntrlLock(True)
 
         openConnection()
 
@@ -269,7 +258,6 @@ ErrorHandle:
 
         lstResult.Refresh()
         updateStatus(vbNullString, True)
-        'cntrlLock(False)
 
         Exit Sub
 ErrorHandle:
@@ -278,7 +266,6 @@ ErrorHandle:
         rsADODB = Nothing
         rsTemp = Nothing
         updateStatus(vbNullString, True)
-        'cntrlLock(False)
 
         updateLog("btnQuery()_Click Error:" & Err.Number & " - " & Err.Description)
         MsgBox("btnQuery()_Click Error:" & Err.Number & " - " & Err.Description)
@@ -294,15 +281,11 @@ ErrorHandle:
     End Sub
 
     Private Sub chkEditorWrap_CheckedChanged(sender As Object, e As EventArgs) Handles chkEditorWrap.CheckedChanged
-        If chkEditorWrap.Checked _
-            Then txtEditor.WordWrap = True _
-            Else txtEditor.WordWrap = False
+        txtEditor.WordWrap = chkEditorWrap.Checked
     End Sub
 
     Private Sub chkLimit_CheckedChanged(sender As Object, e As EventArgs) Handles chkLimit.CheckedChanged
-        If chkLimit.Checked _
-            Then txtLimitAmount.Enabled = True _
-            Else txtLimitAmount.Enabled = False
+        txtLimitAmount.Enabled = chkLimit.Checked
     End Sub
 
     Private Sub lbEditorBackColour_Click(sender As Object, e As EventArgs) Handles lbEditorBackColour.Click
@@ -330,7 +313,7 @@ ErrorHandle:
                 files() As String = e.Data.GetData(DataFormats.FileDrop, False)
 
             For Each path In files
-                'If file path ends with either .sql or .txt, grab (combine multi) text from file(s)
+                'If file path ends with either .sql or .txt, grab (and combine for multi) text from file(s)
                 If Dir(path) <> "" And (path.ToLower.EndsWith(".sql") Or path.ToLower.EndsWith(".txt")) Then
                     If sLoaded = vbNullString _
                         Then sLoaded = My.Computer.FileSystem.ReadAllText(path) _
@@ -380,9 +363,7 @@ ErrorHandle:
     End Sub
 
     Private Sub chkHistoryWrap_CheckedChanged(sender As Object, e As EventArgs) Handles chkHistoryWrap.CheckedChanged
-        If chkHistoryWrap.Checked _
-            Then txtHistory.WordWrap = True _
-            Else txtHistory.WordWrap = False
+        txtHistory.WordWrap = chkHistoryWrap.Checked
     End Sub
 
     Private Sub lbHistoryBackColour_Click(sender As Object, e As EventArgs) Handles lbHistoryBackColour.Click
